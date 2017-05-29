@@ -128,6 +128,12 @@ class TypeService
     {
         if (is_object($data)) {
             $getter = $path;
+            
+            // do not use getters if __call is implemented
+            if (method_exists($data, '__call')) {
+                return isset($data->$path) ? $data->$path : null;
+            }
+            
             if (substr($path, 0, 2) != 'is') {
                 $getter = 'get' . self::classify($path);
                 if (!is_callable([$data, $getter])) {
